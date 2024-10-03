@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="JsonToExcel.fsx" />
+        <None Include="ConvertJsonToExcel.fsx" />
         <None Include="Tut-01.fsx" />
         <Compile Include="Tut-02.fs" />
         <Compile Include="Tut-03.fs" />

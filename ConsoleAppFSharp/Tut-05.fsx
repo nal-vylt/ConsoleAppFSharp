@@ -1,7 +1,6 @@
-// for to
-
 open Microsoft.FSharp.Core
 
+// for to
 for i = 0 to 20 do
     printf $"i : %i{i} \n"
 
@@ -29,7 +28,7 @@ for i = 1 to 10 do
 // cons (::) Operator
 let list' = 1::2::3::4::5::6::7::8::9::10::[];;
 
-(* using init method *)
+// Using init method 
 let list'' = List.init 5 (fun index -> (index, index * index, index * index * index))
 
 // yield operator
@@ -50,19 +49,19 @@ printfn"The init sequence:"
 
 let seq2 = Seq.init 5 (fun n -> n * 3)
 Seq.iter (fun i -> printf "%d " i) seq2
-printfn""
+printfn ""
 
 // Converting an array to sequence by using cast 
-printfn"The array sequence 1:"
+printfn "The array sequence 1:"
 let seq3 = [| 1 .. 10 |] :> seq<int>
 Seq.iter (fun i -> printf "%d " i) seq3
-printfn""
+printfn ""
 
 // Converting an array to sequence by using Seq.ofArray 
 printfn"The array sequence 2:"
 let seq4 = [| 2..2.. 20 |] |> Seq.ofArray
-Seq.iter (fun i -> printf "%d " i) seq4
-printfn""
+Seq.iter (fun i -> printf $"%d{i} ") seq4
+printfn ""
 
 // Set
 // Do not allow duplicate entries to be inserted into the collection.
@@ -78,7 +77,6 @@ printfn""
 
 // Maps
 // A map is a special kind of set that associates the values with key
-
 // Create a map
 let students =
     Map.empty
@@ -108,7 +106,7 @@ let array1 = Array.create 10 ""
 for i in 0 .. array1.Length - 1 do
    Array.set array1 i (i.ToString())
 for i in 0 .. array1.Length - 1 do
-   printf "%s " (Array.get array1 i)
+   printf $"%s{Array.get array1 i} "
 printfn " "
 
 // using the init and zeroCreate
@@ -121,7 +119,8 @@ printfn $"Float Array: %A{array3}"
 
 // Sub Array
 let array1' = [| 0 .. 50 |]
-// array startIndex count
+
+// Array startIndex count
 let array2' = Array.sub array1' 5 15
 
 // Append Array
@@ -332,23 +331,23 @@ type Worker(name : string, shift : string) =
    let mutable _name = name;
    let mutable _shift = shift;
 
-   let nameChanged = new Event<unit>() (* creates event *)
-   let shiftChanged = new Event<unit>() (* creates event *)
+   let nameChanged = new Event<unit>()
+   let shiftChanged = new Event<unit>()
 
-   member this.NameChanged = nameChanged.Publish (* exposed event handler *)
-   member this.ShiftChanged = shiftChanged.Publish (* exposed event handler *)
+   member this.NameChanged = nameChanged.Publish
+   member this.ShiftChanged = shiftChanged.Publish
 
    member this.Name
       with get() = _name
       and set(value) = 
          _name <- value
-         nameChanged.Trigger() (* invokes event handler *)
+         nameChanged.Trigger()
 
    member this.Shift
       with get() = _shift
       and set(value) = 
          _shift <- value
-         shiftChanged.Trigger() (* invokes event handler *)
+         shiftChanged.Trigger()
 
 let wk = new Worker("Wilson", "Evening")
 wk.NameChanged.Add(fun () -> printfn $"Worker changed name! New name: %s{wk.Name}")

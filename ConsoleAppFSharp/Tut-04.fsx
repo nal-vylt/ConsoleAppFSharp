@@ -1,9 +1,8 @@
-// record type
-// tuple
-// anonymous type
+// Record type
+// Tuple
+// Anonymous type
 
 open System
-open System.Collections.Generic
 
 type Day = { DayOfTheMonth: int; Month: int }
 type Person =
@@ -23,19 +22,16 @@ incrementAge women
 women > women'
 
 type Duo = { Person1: Person; Person2: Person }
-
 let brothers = { Person1 = women; Person2 = women' }
 
 // tuple
 (women, women')
 
 // Anonymous record
-
 let duo' = {|Person1 = women; Person2 = women'|}
 let trio = {|duo' with Person3 = women|}
 
 // Sum Types
-
 // Discriminated unions
 
 type Suit =
@@ -98,12 +94,6 @@ let incrementOrderId' =
         
  
 // Option type
-// Have a value or none
-// type Option<'a> =
-//     | Some of 'a
-//     | None
-    
-    
 let translateFizzBuzz' = function
     | "Fizz" -> Some 3
     | "Buzz" -> Some 5
@@ -122,7 +112,6 @@ let inline add x y = x + y
 
 
 // Collection
-
 // Array
 // Fixed size
 // Mutable
@@ -135,11 +124,6 @@ arr.[0] <- 5
 // Linked list
 [1;2;3;4;5;6]
 [1..2..15]
-
-// type LinkedList<'a> =
-//     | ([])
-//     | (::) of head:'a * tail:'a
-    
 let empty = []
 
 let addToList x xs =
@@ -160,12 +144,13 @@ let x: int list = List.head []
 
 let rec printEveryItem = function
     | x::xs ->
-        printfn "%O" x
+        printfn $"{x}"
         printEveryItem xs
     | [] -> ()
     
 printEveryItem [1..10]
 
+// rec key word
 let rec doWithEveryItem f = function
     | x::xs ->
         f x

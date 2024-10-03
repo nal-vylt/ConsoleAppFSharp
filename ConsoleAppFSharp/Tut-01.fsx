@@ -1,17 +1,19 @@
 let myOne : double = 1.5
 let myTwo = 2
-let hello = "hello"
+let text = "Hello World!!!"
 let letterA = 'a'
-// mutable value
+
+// Mutable value
 let mutable isEnabled = true
 isEnabled <- false
 
-
 // Function
 let add x y = x + y
+add 10 15
+
 // Lambda expression
-let add1 = fun x y -> x + y
-let add2 x = fun y -> x + y
+let add' = fun x y -> x + y
+let add'' x = fun y -> x + y
 
 let add5 x =
     let five = 5
@@ -35,11 +37,9 @@ let operator number =
     number
     |> add3'
     |> time2
+operator 10
 
 // Composite operator
 // time2(add3'(number))
 let operator' = 
     add3' >> time2
-
-
- 

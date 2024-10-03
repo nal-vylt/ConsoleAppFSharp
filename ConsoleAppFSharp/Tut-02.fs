@@ -1,5 +1,6 @@
 namespace FSharpBasics
 
+// Module
 module Arithmetic =
     module Addition =
         let add x y = x + y

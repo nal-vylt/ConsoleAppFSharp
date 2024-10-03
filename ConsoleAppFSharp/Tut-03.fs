@@ -2,6 +2,7 @@ namespace FSharpBasics
 
 open System
 
+// Main program
 module Program =
     [<EntryPoint>]
     let main args =
