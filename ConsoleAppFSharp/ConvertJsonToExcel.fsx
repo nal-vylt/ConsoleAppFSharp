@@ -6,108 +6,125 @@ open Newtonsoft.Json
 open SpreadsheetGear
 open System.Threading.Tasks
 
-type Person =
+type Sale =
     {
       Id: int
-      FullName: string
-      Age: int
-      PhoneNumber: string
-      Email: string
+      EmployeeId: string
       Revenue: decimal
-      Profit: int
-      Department: string
+      Cost: decimal
+      Profit: decimal
     }
 
 // Function to read JSON file
-let readJsonFileAsync (filePath: string) : Async<Person[]> =
+let readJsonFileAsync (filePath: string) : Async<list<Sale>> =
     async {
         let! jsonData = File.ReadAllTextAsync(filePath) |> Async.AwaitTask
         printf $"Json Data: %s{jsonData}"
-        return JsonConvert.DeserializeObject<Person[]>(jsonData)
+        return JsonConvert.DeserializeObject<list<Sale>>(jsonData)
     }
 
-// Write headers
+// Write headers and deserialize into a list of Sale
 let writeHeaders (worksheet: IWorksheet) =
     worksheet.Cells.[0, 0].Value <- "Statistics"
     worksheet.Cells.[1, 0].Value <- "Id"
-    worksheet.Cells.[1, 1].Value <- "Full Name"
-    worksheet.Cells.[1, 2].Value <- "Age"
-    worksheet.Cells.[1, 3].Value <- "Phone Number"
-    worksheet.Cells.[1, 4].Value <- "Email"
-    worksheet.Cells.[1, 5].Value <- "Department"
-    worksheet.Cells.[1, 6].Value <- "Revenue"
-    worksheet.Cells.[1, 7].Value <- "Profit"
+    worksheet.Cells.[1, 1].Value <- "Employee Id"
+    worksheet.Cells.[1, 2].Value <- "Revenue"
+    worksheet.Cells.[1, 3].Value <- "Cost"
+    worksheet.Cells.[1, 4].Value <- "Profit"
+    
+    // Style for title
+    let titleCellRange = worksheet.Cells.[0,0,0,4]
+    titleCellRange.Merge()
+    titleCellRange.HorizontalAlignment <- HAlign.Center
+    titleCellRange.VerticalAlignment <- VAlign.Center
+    titleCellRange.Font.Bold <- true
+    titleCellRange.Font.Size <- titleCellRange.Font.Size + 2.5
+    titleCellRange.Font.Color <- Colors.Red
     
     // Style for headers
-    let title = worksheet.Cells.[0,0,0,7]
-    title.Merge()
-    title.HorizontalAlignment <- HAlign.Center
-    title.VerticalAlignment <- VAlign.Center
-    title.Font.Bold <- true
-    title.Font.Size <- title.Font.Size + 2.5
-    title.Font.Color <- Colors.Red
+    let headerCellRange = worksheet.Cells.[1, 0, 1, 4]
+    headerCellRange.HorizontalAlignment <- HAlign.Center
+    headerCellRange.VerticalAlignment <- VAlign.Center
+    headerCellRange.Font.Bold <- true
+    headerCellRange.Font.Size <- headerCellRange.Font.Size + 1.
+    headerCellRange.Font.Color <- Colors.Blue
+    headerCellRange.Borders.LineStyle <- LineStyle.Continuous
+    headerCellRange.Borders.Color <- Colors.Black
     
-    let headerRange = worksheet.Cells.[1, 0, 1, 7]
-    headerRange.HorizontalAlignment <- HAlign.Center
-    headerRange.VerticalAlignment <- VAlign.Center
-    headerRange.Font.Bold <- true
-    headerRange.Font.Size <- headerRange.Font.Size + 1.
-    headerRange.Font.Color <- Colors.Blue
-    headerRange.Borders.LineStyle <- LineStyle.Continuous
-    headerRange.Borders.Color <- Colors.Black
+// Function to write sales data to the worksheet
+let lastHeaderRow = 2;
+let writeData (worksheet: IWorksheet) (sales: list<Sale>) =
+    sales
+    |> List.iteri (fun i sale ->
+        let row = (+) i lastHeaderRow
+        worksheet.Cells.[row, 0].Value <- sale.Id
+        worksheet.Cells.[row, 1].Value <- sale.EmployeeId
+        worksheet.Cells.[row, 2].Value <- sale.Revenue
+        worksheet.Cells.[row, 3].Value <- sale.Cost
+        worksheet.Cells.[row, 4].Value <- sale.Profit
+      )
     
-// Write data
-let writeData (worksheet: IWorksheet) (data: Person[]) =
-    for i in 0 .. data.Length - 1 do
-        let row = (+) i 2
-        worksheet.Cells.[row, 0].Value <- data.[i].Id
-        worksheet.Cells.[row, 1].Value <- data.[i].FullName
-        worksheet.Cells.[row, 2].Value <- data.[i].Age
-        worksheet.Cells.[row, 3].Value <- data.[i].PhoneNumber
-        worksheet.Cells.[row, 4].Value <- data.[i].Email
-        worksheet.Cells.[row, 5].Value <- data.[i].Department
-        worksheet.Cells.[row, 6].Value <- data.[i].Revenue
-        worksheet.Cells.[row, 7].Value <- data.[i].Profit
-        
-    // Apply currency format for Revenue and Profit columns
-    let revenueRange = worksheet.Cells.[2, 6, data.Length + 1, 7]
-    revenueRange.NumberFormat <- "$#,##0"
+    let totalRowData = sales.Length + 2;
+    // Calculate total of revenue and profit
+    let totalLabelCellRange = worksheet.Cells[totalRowData, 0, totalRowData, 1]
+    totalLabelCellRange.Merge()
+    totalLabelCellRange.HorizontalAlignment <- HAlign.Center
+    totalLabelCellRange.VerticalAlignment <- VAlign.Center
+    totalLabelCellRange.Value <- "Total"
+    totalLabelCellRange.Font.Size <- totalLabelCellRange.Font.Size + 1.
+    totalLabelCellRange.Font.Bold <- true
+    totalLabelCellRange.Font.Color <- Colors.Red
     
-    // Style data
-    let dataRange = worksheet.Cells.[1, 0, data.Length + 1, 7]
-    dataRange.Borders.LineStyle <- LineStyle.Continuous
-    dataRange.Borders.Color <- Colors.Black
-    dataRange.Columns.AutoFit()
+    // Formulas for total Revenue, Cost, and Profit
+    worksheet.Cells.[totalRowData, 2].Formula <- $"=SUM(C{(lastHeaderRow+1)}:C{totalRowData})"
+    worksheet.Cells.[totalRowData, 3].Formula <- $"=SUM(D{(lastHeaderRow+1)}:D{totalRowData})"
+    worksheet.Cells.[totalRowData, 4].Formula <- $"=SUM(E{(lastHeaderRow+1)}:E{totalRowData})"
+    
+    // Style for total values
+    let totalValueRange = worksheet.Cells[totalRowData, 2, totalRowData, 4]
+    totalValueRange.Font.Bold <- true
+    totalValueRange.Font.Size <- totalValueRange.Font.Size + 1.
+    
+    // Apply currency format
+    let currencyRange = worksheet.Cells.[lastHeaderRow, 2, totalRowData, 4]
+    currencyRange.NumberFormat <- "$#,##0"
+    
+    // Style data range
+    let dataCellRange = worksheet.Cells.[1, 0, totalRowData, 4]
+    dataCellRange.Borders.LineStyle <- LineStyle.Continuous
+    dataCellRange.Borders.Color <- Colors.Black
+    dataCellRange.Columns.AutoFit()
 
-// Function to create a chart
-let createChart (worksheet: IWorksheet) (data: Person[]) =
+// Function to create a sales chart in the worksheet
+let createChart (worksheet: IWorksheet) (sales: list<Sale>) =
     let windowInfo = worksheet.WindowInfo
 
     // Set the chart's position and size
-    let left = windowInfo.ColumnToPoints(9.)
+    let left = windowInfo.ColumnToPoints(6.)
     let top = windowInfo.RowToPoints(2.)
 
     // Add a chart shape
-    let chartShape = worksheet.Shapes.AddChart(left, top, 400, 300)
+    let chartShape = worksheet.Shapes.AddChart(left, top, 500, 300)
     let chart = chartShape.Chart
 
     // Set the chart's source data
-    let source = worksheet.Cells.[1, 6, data.Length + 1 , 7]
-    chart.SetSourceData(source, SpreadsheetGear.Charts.RowCol.Columns)
+    let dataSourceRange = worksheet.Cells.[1, 1, sales.Length + 1 , 4]
+    chart.SetSourceData(dataSourceRange, SpreadsheetGear.Charts.RowCol.Columns)
 
     // Set the chart type
     chart.ChartType <- SpreadsheetGear.Charts.ChartType.ColumnClustered
 
     // Add a chart title
     chart.HasTitle <- true
-    chart.ChartTitle.Text <- "Revenue and Profit Report"
+    chart.ChartTitle.Text <- "Sales Report"
     chart.ChartTitle.Font.Size <- 12
 
     // Configure legend
     chart.Legend.Position <- SpreadsheetGear.Charts.LegendPosition.Bottom
     chart.Legend.Font.Bold <- true
-// Function to write data to Excel file
-let writeToExcelAsync (data: Person[]) (outputPath: string) : Async<Unit> =
+    
+// Function to write sales data to an Excel file
+let writeToExcelAsync (sales: list<Sale>) (outputPath: string) : Async<Unit> =
     async {
         // Create a new workbook
         let workbook = Factory.GetWorkbook()
@@ -119,22 +136,24 @@ let writeToExcelAsync (data: Person[]) (outputPath: string) : Async<Unit> =
         
         // Write headers and data to the worksheet
         writeHeaders worksheet
-        writeData worksheet data
-        createChart worksheet data
+        writeData worksheet sales
         
-        // Save the workbook
+        // Create a chart to the worksheet
+        createChart worksheet sales
+        
+        // Save the workbook as an Excel file
         do! Task.Run(fun () -> workbook.SaveAs(outputPath, FileFormat.OpenXMLWorkbook)) |> Async.AwaitTask
     }
 
-// Run the program
+// Main function to run the program
 let inputJsonFile = "Data.json"
 let outputXlsxFile = "Output.xlsx"
 
 let resultAsync =
     async {
         try
-            let! data = readJsonFileAsync inputJsonFile
-            do! writeToExcelAsync data outputXlsxFile
+            let! salesData = readJsonFileAsync inputJsonFile
+            do! writeToExcelAsync salesData outputXlsxFile
             printfn $"Data successfully imported to %s{outputXlsxFile}"
         with
             | :? FileNotFoundException as ex ->
@@ -144,9 +163,4 @@ let resultAsync =
             | ex ->
                 printfn $"An unexpected error occurred: %s{ex.Message}"
     }
-
-Async.RunSynchronously(resultAsync)
-
-
-   
-  
+    |> Async.RunSynchronously

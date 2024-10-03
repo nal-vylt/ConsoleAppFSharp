@@ -1,22 +1,142 @@
 [
-  { "Id": 1, "FullName": "Alice Johnson", "Age": 30, "PhoneNumber": "555-1234", "Email": "alice.johnson@example.com", "Revenue": 500000.00, "Profit": 150000, "Department": "Sales" },
-  { "Id": 2, "FullName": "Bob Smith", "Age": 35, "PhoneNumber": "555-2345", "Email": "bob.smith@example.com", "Revenue": 400000.00, "Profit": 120000, "Department": "Sales" },
-  { "Id": 3, "FullName": "Charlie Brown", "Age": 28, "PhoneNumber": "555-3456", "Email": "charlie.brown@example.com", "Revenue": 600000.00, "Profit": 180000, "Department": "Marketing" },
-  { "Id": 4, "FullName": "David Wilson", "Age": 40, "PhoneNumber": "555-4567", "Email": "david.wilson@example.com", "Revenue": 700000.00, "Profit": 210000, "Department": "Marketing" },
-  { "Id": 5, "FullName": "Eva Adams", "Age": 32, "PhoneNumber": "555-5678", "Email": "eva.adams@example.com", "Revenue": 650000.00, "Profit": 195000, "Department": "Sales" },
-  { "Id": 6, "FullName": "Frank Thompson", "Age": 38, "PhoneNumber": "555-6789", "Email": "frank.thompson@example.com", "Revenue": 750000.00, "Profit": 225000, "Department": "Marketing" },
-  { "Id": 7, "FullName": "Grace Lee", "Age": 27, "PhoneNumber": "555-7890", "Email": "grace.lee@example.com", "Revenue": 300000.00, "Profit": 90000, "Department": "Sales" },
-  { "Id": 8, "FullName": "Henry Garcia", "Age": 31, "PhoneNumber": "555-8901", "Email": "henry.garcia@example.com", "Revenue": 550000.00, "Profit": 165000, "Department": "Marketing" },
-  { "Id": 9, "FullName": "Isabella Martinez", "Age": 29, "PhoneNumber": "555-9012", "Email": "isabella.martinez@example.com", "Revenue": 800000.00, "Profit": 240000, "Department": "Sales" },
-  { "Id": 10, "FullName": "Jack Brown", "Age": 45, "PhoneNumber": "555-0123", "Email": "jack.brown@example.com", "Revenue": 350000.00, "Profit": 105000, "Department": "Marketing" },
-  { "Id": 11, "FullName": "Liam Johnson", "Age": 36, "PhoneNumber": "555-1235", "Email": "liam.johnson@example.com", "Revenue": 700000.00, "Profit": 210000, "Department": "Sales" },
-  { "Id": 12, "FullName": "Mia Davis", "Age": 34, "PhoneNumber": "555-2346", "Email": "mia.davis@example.com", "Revenue": 600000.00, "Profit": 180000, "Department": "Marketing" },
-  { "Id": 13, "FullName": "Noah Wilson", "Age": 26, "PhoneNumber": "555-3457", "Email": "noah.wilson@example.com", "Revenue": 750000.00, "Profit": 225000, "Department": "Sales" },
-  { "Id": 14, "FullName": "Olivia Thomas", "Age": 42, "PhoneNumber": "555-4568", "Email": "olivia.thomas@example.com", "Revenue": 400000.00, "Profit": 120000, "Department": "Marketing" },
-  { "Id": 15, "FullName": "Sophia Lewis", "Age": 33, "PhoneNumber": "555-5679", "Email": "sophia.lewis@example.com", "Revenue": 450000.00, "Profit": 135000, "Department": "Sales" },
-  { "Id": 16, "FullName": "William Walker", "Age": 39, "PhoneNumber": "555-6780", "Email": "william.walker@example.com", "Revenue": 500000.00, "Profit": 150000, "Department": "Marketing" },
-  { "Id": 17, "FullName": "James Lee", "Age": 29, "PhoneNumber": "555-7891", "Email": "james.lee@example.com", "Revenue": 600000.00, "Profit": 180000, "Department": "Sales" },
-  { "Id": 18, "FullName": "Ava Hall", "Age": 37, "PhoneNumber": "555-8902", "Email": "ava.hall@example.com", "Revenue": 550000.00, "Profit": 165000, "Department": "Marketing" },
-  { "Id": 19, "FullName": "Lucas Allen", "Age": 41, "PhoneNumber": "555-9013", "Email": "lucas.allen@example.com", "Revenue": 700000.00, "Profit": 210000, "Department": "Sales" },
-  { "Id": 20, "FullName": "Lily Young", "Age": 30, "PhoneNumber": "555-0124", "Email": "lily.young@example.com", "Revenue": 300000.00, "Profit": 90000, "Department": "Marketing" }
+  {
+    "Id": 1,
+    "EmployeeId": "NAL-01",
+    "Revenue": 500000,
+    "Cost": 350000,
+    "Profit": 150000
+  },
+  {
+    "Id": 2,
+    "EmployeeId": "NAL-02",
+    "Revenue": 400000,
+    "Cost": 280000,
+    "Profit": 120000
+  },
+  {
+    "Id": 3,
+    "EmployeeId": "NAL-03",
+    "Revenue": 600000,
+    "Cost": 420000,
+    "Profit": 180000
+  },
+  {
+    "Id": 4,
+    "EmployeeId": "NAL-04",
+    "Revenue": 700000,
+    "Cost": 490000,
+    "Profit": 210000
+  },
+  {
+    "Id": 5,
+    "EmployeeId": "NAL-05",
+    "Revenue": 650000,
+    "Cost": 455000,
+    "Profit": 195000
+  },
+  {
+    "Id": 6,
+    "EmployeeId": "NAL-06",
+    "Revenue": 750000,
+    "Cost": 525000,
+    "Profit": 225000
+  },
+  {
+    "Id": 7,
+    "EmployeeId": "NAL-07",
+    "Revenue": 300000,
+    "Cost": 210000,
+    "Profit": 90000
+  },
+  {
+    "Id": 8,
+    "EmployeeId": "NAL-08",
+    "Revenue": 550000,
+    "Cost": 385000,
+    "Profit": 165000
+  },
+  {
+    "Id": 9,
+    "EmployeeId": "NAL-09",
+    "Revenue": 800000,
+    "Cost": 560000,
+    "Profit": 240000
+  },
+  {
+    "Id": 10,
+    "EmployeeId": "NAL-10",
+    "Revenue": 350000,
+    "Cost": 245000,
+    "Profit": 105000
+  },
+  {
+    "Id": 11,
+    "EmployeeId": "NAL-11",
+    "Revenue": 700000,
+    "Cost": 490000,
+    "Profit": 210000
+  },
+  {
+    "Id": 12,
+    "EmployeeId": "NAL-12",
+    "Revenue": 600000,
+    "Cost": 420000,
+    "Profit": 180000
+  },
+  {
+    "Id": 13,
+    "EmployeeId": "NAL-13",
+    "Revenue": 750000,
+    "Cost": 525000,
+    "Profit": 225000
+  },
+  {
+    "Id": 14,
+    "EmployeeId": "NAL-14",
+    "Revenue": 400000,
+    "Cost": 280000,
+    "Profit": 120000
+  },
+  {
+    "Id": 15,
+    "EmployeeId": "NAL-15",
+    "Revenue": 450000,
+    "Cost": 315000,
+    "Profit": 135000
+  },
+  {
+    "Id": 16,
+    "EmployeeId": "NAL-16",
+    "Revenue": 500000,
+    "Cost": 350000,
+    "Profit": 150000
+  },
+  {
+    "Id": 17,
+    "EmployeeId": "NAL-17",
+    "Revenue": 600000,
+    "Cost": 420000,
+    "Profit": 180000
+  },
+  {
+    "Id": 18,
+    "EmployeeId": "NAL-18",
+    "Revenue": 550000,
+    "Cost": 385000,
+    "Profit": 165000
+  },
+  {
+    "Id": 19,
+    "EmployeeId": "NAL-19",
+    "Revenue": 700000,
+    "Cost": 490000,
+    "Profit": 210000
+  },
+  {
+    "Id": 20,
+    "EmployeeId": "NAL-20",
+    "Revenue": 300000,
+    "Cost": 210000,
+    "Profit": 90000
+  }
 ]
