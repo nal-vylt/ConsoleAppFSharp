@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>ConsoleAppF</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="JsonToExcel.fsx" />
+        <None Include="Tut-01.fsx" />
+        <Compile Include="Tut-02.fs" />
+        <Compile Include="Tut-03.fs" />
+        <None Include="Tut-04.fsx" />
+        <None Include="Tut-05.fsx" />
+        <None Include="Async.fsx" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="SpreadsheetGear" Version="8.4.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Data.json" />
+    </ItemGroup>
+
+</Project>
