@@ -4,6 +4,6 @@
 
 2. **Run the following command**:
    ```bash
-   dotnet fsi JsonToExcel.fsx
+   dotnet fsi ConvertJsonToExcel.fsx
 3. **Locate the output file**: 
    - The generated file `Output.xlsx` will be available in the `ConsoleAppFsharp` folder.
