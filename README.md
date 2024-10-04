@@ -12,6 +12,7 @@
 ![image](https://github.com/user-attachments/assets/eb41f6df-f503-4739-b0f7-b0eaa24c3ce3)
 
 ### **Another small program**
+- This program establishes the foundational structure of the code.
 1. Run the **FizzBuzz** program
 2. Expected Result
    - The program will display numbers, replacing multiples of 3 with "Fizz," multiples of 5 with "Buzz," and multiples of both with "FizzBuzz."
