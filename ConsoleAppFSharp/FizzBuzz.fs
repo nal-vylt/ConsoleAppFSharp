@@ -9,4 +9,3 @@ module Program =
     let main args =
         Application.application Console.ReadLine Console.WriteLine ()
         0
-        

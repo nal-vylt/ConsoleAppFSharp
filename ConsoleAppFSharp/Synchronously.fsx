@@ -1,6 +1,7 @@
 open System.Net.Http
 open Microsoft.FSharp.Control
 open Microsoft.FSharp.Core
+open System.IO
 
 let work a b =
     async {
@@ -42,8 +43,7 @@ let processDataAsync (url: string) : Async<Unit> =
 let url = "https://api.github.com"
 Async.RunSynchronously (processDataAsync url)
 
-open System.IO
-
+// Reading content from file
 let asyncRead path = async {
     do printf $"Reading content from file {path}"
     let content = File.ReadAllText path
