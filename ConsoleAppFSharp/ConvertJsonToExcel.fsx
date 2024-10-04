@@ -104,7 +104,7 @@ let createChart (worksheet: IWorksheet) (sales: list<Sale>) =
     let top = windowInfo.RowToPoints(2.)
 
     // Add a chart shape
-    let chartShape = worksheet.Shapes.AddChart(left, top, 500, 300)
+    let chartShape = worksheet.Shapes.AddChart(left, top, 600, 300)
     let chart = chartShape.Chart
 
     // Set the chart's source data
