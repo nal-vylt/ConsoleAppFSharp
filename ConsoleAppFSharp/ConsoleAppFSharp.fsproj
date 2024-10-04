@@ -7,13 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="Library.fs" />
         <None Include="ConvertJsonToExcel.fsx" />
         <None Include="Tut-01.fsx" />
         <Compile Include="Tut-02.fs" />
-        <Compile Include="Tut-03.fs" />
+        <None Include="Tut-03.fsx" />
         <None Include="Tut-04.fsx" />
-        <None Include="Tut-05.fsx" />
-        <None Include="Async.fsx" />
+        <None Include="Synchronously.fsx" />
+        <Compile Include="FizzBuzz.fs" />
     </ItemGroup>
 
     <ItemGroup>
