@@ -24,7 +24,7 @@ let readJsonFileAsync (filePath: string) : Async<list<Sale>> =
         return JsonConvert.DeserializeObject<list<Sale>>(jsonData)
     }
 
-// Function to read Excel template file
+// Function to read an Excel template file
 let readExcelFile (filePath: string) : IWorkbook =
     let workbook = Factory.GetWorkbook(filePath)
     workbook
