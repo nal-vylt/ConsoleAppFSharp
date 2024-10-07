@@ -1,6 +1,7 @@
 #r "nuget: Newtonsoft.Json"
 #r "nuget: SpreadsheetGear"
 
+open System
 open System.IO
 open Newtonsoft.Json
 open SpreadsheetGear
@@ -23,33 +24,10 @@ let readJsonFileAsync (filePath: string) : Async<list<Sale>> =
         return JsonConvert.DeserializeObject<list<Sale>>(jsonData)
     }
 
-// Write headers and deserialize into a list of Sale
-let writeHeaders (worksheet: IWorksheet) =
-    worksheet.Cells.[0, 0].Value <- "Statistics"
-    worksheet.Cells.[1, 0].Value <- "Id"
-    worksheet.Cells.[1, 1].Value <- "Employee Id"
-    worksheet.Cells.[1, 2].Value <- "Revenue"
-    worksheet.Cells.[1, 3].Value <- "Cost"
-    worksheet.Cells.[1, 4].Value <- "Profit"
-    
-    // Style for title
-    let titleCellRange = worksheet.Cells.[0,0,0,4]
-    titleCellRange.Merge()
-    titleCellRange.HorizontalAlignment <- HAlign.Center
-    titleCellRange.VerticalAlignment <- VAlign.Center
-    titleCellRange.Font.Bold <- true
-    titleCellRange.Font.Size <- titleCellRange.Font.Size + 2.5
-    titleCellRange.Font.Color <- Colors.Red
-    
-    // Style for headers
-    let headerCellRange = worksheet.Cells.[1, 0, 1, 4]
-    headerCellRange.HorizontalAlignment <- HAlign.Center
-    headerCellRange.VerticalAlignment <- VAlign.Center
-    headerCellRange.Font.Bold <- true
-    headerCellRange.Font.Size <- headerCellRange.Font.Size + 1.
-    headerCellRange.Font.Color <- Colors.Blue
-    headerCellRange.Borders.LineStyle <- LineStyle.Continuous
-    headerCellRange.Borders.Color <- Colors.Black
+// Function to read Excel template file
+let readExcelFile (filePath: string) : IWorkbook =
+    let workbook = Factory.GetWorkbook(filePath)
+    workbook
     
 // Function to write sales data to the worksheet
 let lastHeaderRow = 2;
@@ -64,33 +42,23 @@ let writeData (worksheet: IWorksheet) (sales: list<Sale>) =
         worksheet.Cells.[row, 4].Value <- sale.Profit
       )
     
-    let totalRowData = sales.Length + 2;
-    // Calculate total of revenue and profit
-    let totalLabelCellRange = worksheet.Cells[totalRowData, 0, totalRowData, 1]
-    totalLabelCellRange.Merge()
-    totalLabelCellRange.HorizontalAlignment <- HAlign.Center
-    totalLabelCellRange.VerticalAlignment <- VAlign.Center
-    totalLabelCellRange.Value <- "Total"
-    totalLabelCellRange.Font.Size <- totalLabelCellRange.Font.Size + 1.
-    totalLabelCellRange.Font.Bold <- true
-    totalLabelCellRange.Font.Color <- Colors.Red
+    let lastDataRow = sales.Length + 1;
     
     // Formulas for total Revenue, Cost, and Profit
-    worksheet.Cells.[totalRowData, 2].Formula <- $"=SUM(C{(lastHeaderRow+1)}:C{totalRowData})"
-    worksheet.Cells.[totalRowData, 3].Formula <- $"=SUM(D{(lastHeaderRow+1)}:D{totalRowData})"
-    worksheet.Cells.[totalRowData, 4].Formula <- $"=SUM(E{(lastHeaderRow+1)}:E{totalRowData})"
-    
-    // Style for total values
-    let totalValueRange = worksheet.Cells[totalRowData, 2, totalRowData, 4]
-    totalValueRange.Font.Bold <- true
-    totalValueRange.Font.Size <- totalValueRange.Font.Size + 1.
+    worksheet.Cells.["G3"].Formula <- $"=SUM(C{(lastHeaderRow+1)}:C{lastDataRow+1})"
+    worksheet.Cells.["H3"].Formula <- $"=SUM(D{(lastHeaderRow+1)}:D{lastDataRow+1})"
+    worksheet.Cells.["I3"].Formula <- $"=SUM(E{(lastHeaderRow+1)}:E{lastDataRow+1})"
     
     // Apply currency format
-    let currencyRange = worksheet.Cells.[lastHeaderRow, 2, totalRowData, 4]
+    let currencyRange = worksheet.Cells.[lastHeaderRow, 2, lastDataRow, 4]
     currencyRange.NumberFormat <- "$#,##0"
     
+    let totalRange = worksheet.Cells.["G3:I3"]
+    totalRange.NumberFormat <- "$#,##0"
+    totalRange.Columns.AutoFit()
+    
     // Style data range
-    let dataCellRange = worksheet.Cells.[1, 0, totalRowData, 4]
+    let dataCellRange = worksheet.Cells.[1, 0, lastDataRow, 4]
     dataCellRange.Borders.LineStyle <- LineStyle.Continuous
     dataCellRange.Borders.Color <- Colors.Black
     dataCellRange.Columns.AutoFit()
@@ -100,11 +68,11 @@ let createChart (worksheet: IWorksheet) (sales: list<Sale>) =
     let windowInfo = worksheet.WindowInfo
 
     // Set the chart's position and size
-    let left = windowInfo.ColumnToPoints(6.)
+    let left = windowInfo.ColumnToPoints(10.)
     let top = windowInfo.RowToPoints(2.)
 
     // Add a chart shape
-    let chartShape = worksheet.Shapes.AddChart(left, top, 600, 300)
+    let chartShape = worksheet.Shapes.AddChart(left, top, 500, 300)
     let chart = chartShape.Chart
 
     // Set the chart's source data
@@ -124,18 +92,16 @@ let createChart (worksheet: IWorksheet) (sales: list<Sale>) =
     chart.Legend.Font.Bold <- true
     
 // Function to write sales data to an Excel file
-let writeToExcelAsync (sales: list<Sale>) (outputPath: string) : Async<Unit> =
+let updateExcelTemplateAsync
+    (sales: list<Sale>)
+    (excelTemplatePath: string)
+    (outputPath: string) : Async<Unit> =
     async {
-        // Create a new workbook
-        let workbook = Factory.GetWorkbook()
+        // Read template file
+        let workbook = readExcelFile excelTemplatePath
         let worksheet = workbook.Worksheets.[0]
         
-        // Set the worksheet name and turn off the default gridlines.
-        worksheet.Name <- "Sales Report";
-        worksheet.WindowInfo.DisplayGridlines <- false;
-        
-        // Write headers and data to the worksheet
-        writeHeaders worksheet
+        // Write data to the worksheet
         writeData worksheet sales
         
         // Create a chart to the worksheet
@@ -147,13 +113,16 @@ let writeToExcelAsync (sales: list<Sale>) (outputPath: string) : Async<Unit> =
 
 // Main function to run the program
 let inputJsonFile = "Data.json"
-let outputXlsxFile = "Output.xlsx"
+let excelTemplateFile = "Template.xlsx"
+
+let datetime = DateTime.UtcNow.ToString("yyyyMMdd");
+let outputXlsxFile = $"Output_{datetime}.xlsx"
 
 let resultAsync =
     async {
         try
             let! salesData = readJsonFileAsync inputJsonFile
-            do! writeToExcelAsync salesData outputXlsxFile
+            do! updateExcelTemplateAsync salesData excelTemplateFile outputXlsxFile
             printfn $"Data successfully imported to %s{outputXlsxFile}"
         with
             | :? FileNotFoundException as ex ->
