@@ -19,7 +19,11 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="SpreadsheetGear" Version="8.4.4" />
+        <Reference Include="SpreadsheetGear">
+            <HintPath>SpreadsheetGear.dll</HintPath>
+        </Reference>
+<!--      <PackageReference Include="SpreadsheetGear" Version="8.4.4" />-->
+        
     </ItemGroup>
 
     <ItemGroup>

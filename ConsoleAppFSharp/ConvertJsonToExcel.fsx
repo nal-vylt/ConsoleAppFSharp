@@ -1,5 +1,5 @@
 #r "nuget: Newtonsoft.Json"
-#r "nuget: SpreadsheetGear"
+#r "nuget: SpreadsheetGear, 8.4.4"
 
 open System
 open System.IO
@@ -16,11 +16,18 @@ type Sale =
       Profit: decimal
     }
 
+// set spreads sheet gear license
+let setSpreadsheetGearLicense() =
+        try
+            SpreadsheetGear.Factory.SetSignedLicense("")
+        with
+        | ex when ex.Message.Contains("must be the first method called in the Factory class") ->()
+        | ex -> eprintfn $"error signing license %s{ex.Message}"
+
 // Function to read JSON file
 let readJsonFileAsync (filePath: string) : Async<list<Sale>> =
     async {
         let! jsonData = File.ReadAllTextAsync(filePath) |> Async.AwaitTask
-        printf $"Json Data: %s{jsonData}"
         return JsonConvert.DeserializeObject<list<Sale>>(jsonData)
     }
 
@@ -40,27 +47,21 @@ let writeData (worksheet: IWorksheet) (sales: list<Sale>) =
         worksheet.Cells.[row, 2].Value <- sale.Revenue
         worksheet.Cells.[row, 3].Value <- sale.Cost
         worksheet.Cells.[row, 4].Value <- sale.Profit
+        
+        // Check if this is the last item then delete the next row
+        if (i = sales.Length - 1) then
+            let entireRow = worksheet.Cells.[row + 1, 0]
+            entireRow.EntireRow.Delete()
+        // Insert a new row
+        else
+            let row = worksheet.Cells.[row + 1, 0, row + 1, 4]
+            row.EntireRow.Insert(InsertShiftDirection.Down)
       )
     
     let lastDataRow = sales.Length + 1;
     
-    // Formulas for total Revenue, Cost, and Profit
-    worksheet.Cells.["G3"].Formula <- $"=SUM(C{(lastHeaderRow+1)}:C{lastDataRow+1})"
-    worksheet.Cells.["H3"].Formula <- $"=SUM(D{(lastHeaderRow+1)}:D{lastDataRow+1})"
-    worksheet.Cells.["I3"].Formula <- $"=SUM(E{(lastHeaderRow+1)}:E{lastDataRow+1})"
-    
-    // Apply currency format
-    let currencyRange = worksheet.Cells.[lastHeaderRow, 2, lastDataRow, 4]
-    currencyRange.NumberFormat <- "$#,##0"
-    
-    let totalRange = worksheet.Cells.["G3:I3"]
-    totalRange.NumberFormat <- "$#,##0"
-    totalRange.Columns.AutoFit()
-    
     // Style data range
-    let dataCellRange = worksheet.Cells.[1, 0, lastDataRow, 4]
-    dataCellRange.Borders.LineStyle <- LineStyle.Continuous
-    dataCellRange.Borders.Color <- Colors.Black
+    let dataCellRange = worksheet.Cells.[1, 0, lastDataRow + 1, 4]
     dataCellRange.Columns.AutoFit()
 
 // Function to create a sales chart in the worksheet
@@ -68,7 +69,7 @@ let createChart (worksheet: IWorksheet) (sales: list<Sale>) =
     let windowInfo = worksheet.WindowInfo
 
     // Set the chart's position and size
-    let left = windowInfo.ColumnToPoints(10.)
+    let left = windowInfo.ColumnToPoints(6.)
     let top = windowInfo.RowToPoints(2.)
 
     // Add a chart shape
@@ -97,6 +98,9 @@ let generateExcelFileAsync
     (excelTemplatePath: string)
     (outputPath: string) : Async<Unit> =
     async {
+        // Set spread sheet gear license
+        setSpreadsheetGearLicense()
+        
         // Read template file
         let workbook = readExcelFile excelTemplatePath
         let worksheet = workbook.Worksheets.[0]
@@ -122,6 +126,9 @@ let resultAsync =
     async {
         try
             let! salesData = readJsonFileAsync inputJsonFile
+            
+            if salesData.Length <= 0 then printf "Don't have any data to export!"
+            
             do! generateExcelFileAsync salesData excelTemplateFile outputXlsxFile
             printfn $"Data successfully imported to %s{outputXlsxFile}"
         with

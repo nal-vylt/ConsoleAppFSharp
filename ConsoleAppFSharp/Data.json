@@ -138,5 +138,26 @@
     "Revenue": 300000,
     "Cost": 210000,
     "Profit": 90000
+  },
+  {
+    "Id": 21,
+    "EmployeeId": "ID-21",
+    "Revenue": 300000,
+    "Cost": 210000,
+    "Profit": 90000
+  },
+  {
+    "Id": 22,
+    "EmployeeId": "ID-22",
+    "Revenue": 300000,
+    "Cost": 210000,
+    "Profit": 90000
+  },
+  {
+    "Id": 23,
+    "EmployeeId": "ID-23",
+    "Revenue": 300000,
+    "Cost": 210000,
+    "Profit": 90000
   }
 ]
