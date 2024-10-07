@@ -92,7 +92,7 @@ let createChart (worksheet: IWorksheet) (sales: list<Sale>) =
     chart.Legend.Font.Bold <- true
     
 // Function to write sales data to an Excel file
-let updateExcelTemplateAsync
+let generateExcelFlieAsync
     (sales: list<Sale>)
     (excelTemplatePath: string)
     (outputPath: string) : Async<Unit> =
@@ -122,7 +122,7 @@ let resultAsync =
     async {
         try
             let! salesData = readJsonFileAsync inputJsonFile
-            do! updateExcelTemplateAsync salesData excelTemplateFile outputXlsxFile
+            do! generateExcelFlieAsync salesData excelTemplateFile outputXlsxFile
             printfn $"Data successfully imported to %s{outputXlsxFile}"
         with
             | :? FileNotFoundException as ex ->
